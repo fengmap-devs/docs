@@ -116,13 +116,19 @@
             })
 
             map.on('mapClickNode', function (e) {
+                var mapCoord = e.mapCoord;
                 var domEvent = e.eventInfo.domEvent;
                 var clientX = domEvent.clientX;
                 var clientY = domEvent.clientY;
 
-                var coordinate = map.coordScreenToMap({ x: clientX, y: clientY });
-                var x = coordinate.x;
-                var y = coordinate.y;
+                var clientHTML = '<p>屏幕坐标：<span>x：' + clientX + '</span>，<span>y：' + clientY + '</span></p>';
+                var mapHTMl = '<p>地图坐标：<span>当前点击可能不在地图上</span></p>'
+
+                if (mapCoord) {
+                    var x = mapCoord.x;
+                    var y = mapCoord.y;
+                    mapHTMl = '<p>地图坐标：<span>x：' + x + '</span>，<span>y：' + y + '</span></p>';
+                }
 
                 layer.open({
                     type: 1,
@@ -134,7 +140,7 @@
                     btn: ['确认'],
                     btnAlign: 'r',
                     moveType: 0,
-                    content: '<div style="padding:15px;"><p>屏幕坐标：<span>x：' + clientX + '</span>，<span>y：' + clientY + '</span></p><p>地图坐标：<span>x：' + x + '</span>，<span>y：' + y + '</span></p></div>',
+                    content: '<div style="padding:15px;">' + clientHTML + mapHTMl + '</div>',
                     yes: function (index, layero) {
                         layer.close(index);
                     },
