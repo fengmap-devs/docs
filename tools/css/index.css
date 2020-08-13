@@ -1,0 +1,34 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+p{
+    margin-bottom: 15px;
+}
+
+.container{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.fm-menu{
+    position: fixed;
+    top:0;
+    left: 0;
+}
+
+#fengMap {
+    width: 100%;
+    height: 100%;
+}
+
+.fm-form{
+    padding: 15px 15px 0 0;
+}

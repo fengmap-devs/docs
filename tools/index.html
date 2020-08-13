@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蜂鸟云-地图在线测试</title>
+    <link rel="stylesheet" href="./lib/layui/css/layui.css">
+    <link rel="stylesheet" href="./css/index.css ">
+</head>
+
+<body>
+    <div class="container">
+        <!-- <div class="fm-menu">
+            <ul class="layui-nav" lay-filter="menu">
+                <li class="layui-nav-item"><a>最新活动</a></li>
+                <li class="layui-nav-item layui-this"><a>产品</a></li>
+                <li class="layui-nav-item"><a>大数据</a></li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">解决方案</a>
+                    <dl class="layui-nav-child">
+                        <dd><a>移动模块</a></dd>
+                        <dd><a>后台模版</a></dd>
+                        <dd><a>电商平台</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a href="">社区</a></li>
+            </ul>
+        </div> -->
+        <div id="fengMap"></div>
+    </div>
+
+
+
+
+    <script src="./lib/fengmap.min.js"></script>
+    <script src="./lib/fmap.min.js"></script>
+    <script src="./lib/layui/layui.js"></script>
+
+</body>
+<script>
+
+    var fmap = null;
+
+    window.onload = function () {
+
+        //初始化地图参数
+        layui.use(['layer', 'form', 'element'], function () {
+
+            var layer = layui.layer,
+                form = layui.form,
+                element = layui.element,
+                $ = layui.jquery;
+
+            var options = null;
+
+            layer.open({
+                type: 1,
+                title: '地图信息',
+                closeBtn: false,
+                area: '480px;',
+                shade: 0.8,
+                id: 'LAY_layuipro',
+                btn: ['确认'],
+                btnAlign: 'r',
+                moveType: 0,
+                content: $('#mapForm'),
+                yes: function (index, layero) {
+                    options = form.val("fm-form");
+                    layer.close(index);
+                },
+                end: function () {
+                    initMap(options);
+                }
+            });
+
+
+            // element.on('nav(menu)', function (data, elem) {
+            //     console.log(data.text());
+            // });
+
+        });
+
+
+        //初始化地图
+        function initMap(options) {
+            var layerIndex = layer.open({ content: '正在加载地图...', title: false, btn: false, closeBtn: false });
+            var option = Object.assign({},
+                options, {
+                container: document.querySelector('#fengMap'),
+                defaultViewMode: fengmap.FMViewMode.MODE_2D
+            });
+            fmap = new duanliang.Fmap(option);
+
+            const map = fmap.map;
+
+            map.on('loadComplete', function () {
+
+                var btnFloorCtlOpt = {
+                    //默认在右下角
+                    position: fengmap.FMControlPosition.RIGHT_TOP,
+                    //初始楼层按钮显示个数配置。默认显示5层,其他的隐藏，可滚动查看
+                    showBtnCount: 6,
+                    //初始是否是多层显示，默认单层显示
+                    allLayer: false,
+                    //位置x,y的偏移量
+                    offset: {
+                        x: -20,
+                        y: 20
+                    }
+                };
+                //不带单/双层楼层控制按钮,初始时只有1个按钮,点击后可弹出其他楼层按钮
+                btnFloorControl = new fengmap.FMButtonGroupsControl(map, btnFloorCtlOpt);
+
+                layer.close(layerIndex);
+            })
+
+            map.on('mapClickNode', function (e) {
+                var domEvent = e.eventInfo.domEvent;
+                var clientX = domEvent.clientX;
+                var clientY = domEvent.clientY;
+
+                var coordinate = map.coordScreenToMap({ x: clientX, y: clientY });
+                var x = coordinate.x;
+                var y = coordinate.y;
+
+                layer.open({
+                    type: 1,
+                    title: '地图坐标信息',
+                    closeBtn: false,
+                    area: '480px;',
+                    shade: 0.8,
+                    id: 'LAY_layuipro',
+                    btn: ['确认'],
+                    btnAlign: 'r',
+                    moveType: 0,
+                    content: '<div style="padding:15px;"><p>屏幕坐标：<span>x：' + clientX + '</span>，<span>y：' + clientY + '</span></p><p>地图坐标：<span>x：' + x + '</span>，<span>y：' + y + '</span></p></div>',
+                    yes: function (index, layero) {
+                        layer.close(index);
+                    },
+                });
+            })
+        }
+    }
+</script>
+
+
+<form id="mapForm" class="layui-form fm-form" lay-filter="fm-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">mapId</label>
+        <div class="layui-input-block">
+            <input type="text" name="mapId" required lay-verify="required" placeholder="请输入标题" autocomplete="off"
+                class="layui-input" value="10347">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">appName</label>
+        <div class="layui-input-block">
+            <input type="text" name="appName" required lay-verify="required" placeholder="请输入标题" autocomplete="off"
+                class="layui-input" value="蜂鸟研发SDK_2_0">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">key</label>
+        <div class="layui-input-block">
+            <input type="text" name="key" required lay-verify="required" placeholder="请输入标题" autocomplete="off"
+                class="layui-input" value="57c7f309aca507497d028a9c00207cf8">
+        </div>
+    </div>
+</form>
+
+</html>
