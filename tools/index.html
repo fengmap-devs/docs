@@ -30,13 +30,9 @@
         <div id="fengMap"></div>
     </div>
 
-
-
-
     <script src="./lib/fengmap.min.js"></script>
-    <script src="./lib/fmap.min.js"></script>
+    <!-- <script src="./lib/fmap.min.js"></script> -->
     <script src="./lib/layui/layui.js"></script>
-
 </body>
 <script>
 
@@ -54,47 +50,71 @@
 
             var options = null;
 
-            layer.open({
-                type: 1,
-                title: '地图信息',
-                closeBtn: false,
-                area: '480px;',
-                shade: 0.8,
-                id: 'LAY_layuipro',
-                btn: ['确认'],
-                btnAlign: 'r',
-                moveType: 0,
-                content: $('#mapForm'),
-                yes: function (index, layero) {
-                    options = form.val("fm-form");
-                    layer.close(index);
-                },
-                end: function () {
-                    initMap(options);
-                }
-            });
+            // layer.open({
+            //     type: 1,
+            //     title: '地图信息',
+            //     closeBtn: false,
+            //     area: '480px;',
+            //     shade: 0.8,
+            //     id: 'LAY_layuipro',
+            //     btn: ['确认'],
+            //     btnAlign: 'r',
+            //     moveType: 0,
+            //     content: $('#mapForm'),
+            //     yes: function (index, layero) {
+            //         options = form.val("fm-form");
+            //         layer.close(index);
+            //     },
+            //     end: function () {
+            //         initMap(options);
+            //     }
+            // });
 
 
             // element.on('nav(menu)', function (data, elem) {
             //     console.log(data.text());
             // });
 
+
+            initMap({});
+
+
+
         });
 
 
         //初始化地图
         function initMap(options) {
+            var fmapID = '10347';
+
             var layerIndex = layer.open({ content: '正在加载地图...', title: false, btn: false, closeBtn: false });
+
             var option = Object.assign({},
                 options, {
                 container: document.querySelector('#fengMap'),
-                defaultViewMode: fengmap.FMViewMode.MODE_2D
+                defaultViewMode: fengmap.FMViewMode.MODE_2D,
+                mapServerURL: './data/' + fmapID,
+                mapThemeURL: './data/theme',
+                appName: '蜂鸟研发SDK_2_0',
+                key: '57c7f309aca507497d028a9c00207cf8'
             });
-            fmap = new duanliang.Fmap(option);
 
-            const map = fmap.map;
+            map = new fengmap.FMMap(option);
+
+            console.log({ map });
+
+            //fmap = new duanliang.Fmap(option);
+
+            //const map = fmap.map;
+
+            map.openMapById(fmapID, function (error) {
+                //打印错误信息
+                console.log(error);
+            });
 
             map.on('loadComplete', function () {
+
+                console.log('xxx')
 
                 var btnFloorCtlOpt = {
                     //默认在右下角
